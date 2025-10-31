@@ -2,6 +2,7 @@
 using HarmonyLib;
 using Shared.MenuOptions;
 using Shared.TrackSelection;
+using System.Security.Cryptography;
 using UnityEngine;
 
 namespace RiftMarks.Patches;
@@ -22,6 +23,11 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
     public bool MarkModeEnabled { get; private set; }
     public bool InitializedSliders { get; private set; }
 
+    public Color BeatModeFillColor { get; private set; } = Color.clear;
+    public Color BeatModeBackgroundColor { get; private set; } = Color.clear;
+    public Color MarkModeFillColor { get; private set; } = new(0.4f, 0.8f, 1.0f);
+    public Color MarkModeBackgroundColor { get; private set; } = new(0.3f, 0.4f, 0.5f); 
+
     public void InitializeSliders() {
         if(InitializedSliders) {
             return;
@@ -34,7 +40,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
 
     public void SetMarkMode(bool enabled) {
         MarkModeEnabled = enabled;
-        Instance.InitializePracticeBeatRange();
+        Instance.InitializePracticeBeatRange(); // call the original function
     }
 
     public void ToggleMarkMode() {
@@ -58,6 +64,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
     }
 
     public void InitializePracticeBeatRange() {
+        UpdateColors();
         if(!UsingMarks || Slider is null) {
             return;
         }
@@ -67,6 +74,25 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
         Slider.SetSliderBounds(0, max);
         Slider.SetCurrentValueMax(max);
         Slider.SetCurrentValueMin(0);
+    }
+
+    public void UpdateColors() {
+        if(Slider is null) {
+            return;
+        }
+
+        if(BeatModeFillColor == Color.clear) {
+            BeatModeFillColor = Slider._selectedFillColor;
+        }
+
+        if(BeatModeBackgroundColor == Color.clear) {
+            BeatModeBackgroundColor = Slider._selectedBackgroundColor;
+        }
+
+        Plugin.Log.LogFatal($"Updating colors to {(UsingMarks ? MarkModeBackgroundColor : BeatModeBackgroundColor)}");
+        Slider._selectedFillColor = UsingMarks ? MarkModeFillColor : BeatModeFillColor;
+        Slider._selectedBackgroundColor = UsingMarks ? MarkModeBackgroundColor : BeatModeBackgroundColor;
+        Slider.RefreshVisuals();
     }
 }
 
