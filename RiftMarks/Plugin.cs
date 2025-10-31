@@ -12,7 +12,7 @@ namespace RiftMarks;
 public class Plugin : BaseUnityPlugin {
     public const string GUID = "com.lalabuff.necrodancer.riftmarks";
     public const string NAME = "RiftMarks";
-    public const string VERSION = "1.0.2";
+    public const string VERSION = "0.0.0";
 
     public const string ALLOWED_VERSIONS = "1.10.0";
     public static string[] AllowedVersions => ALLOWED_VERSIONS.Split(' ');
