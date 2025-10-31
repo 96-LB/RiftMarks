@@ -33,4 +33,6 @@ public class RiftMarkList {
 
         return _riftMarks[index].Beat;
     }
+
+    public int GetIndex(int beat) => _riftMarks.TakeWhile(x => x.Beat <= beat).Count() - 1;
 }

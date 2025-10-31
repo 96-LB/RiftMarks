@@ -13,8 +13,10 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
     const string DEFAULT = "DEFAULT";
     public Dictionary<string, RiftMarkList> RiftMarks { get; } = [];
     
-    public void SetRiftMarks(Dictionary<string, List<RiftMark>> marks) {
-        foreach(var (key, value) in marks) {
+    public void SetRiftMarks(Dictionary<string, List<RiftMark>>? marks) {
+        RiftMarks.Clear(); ;
+        
+        foreach(var (key, value) in marks ?? []) {
             RiftMarks[key.ToUpperInvariant()] = new RiftMarkList(value);
         }
     }
@@ -48,5 +50,6 @@ public static class MetadataPatch {
                 .Pipe(state.SetRiftMarks);
         }
         Plugin.Log.LogFatal(JsonConvert.SerializeObject(state.RiftMarks));
+        // TODO: don't let this prevent loading the track
     }
 }
