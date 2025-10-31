@@ -49,7 +49,6 @@ public static class MetadataPatch {
                 .Pipe(JsonConvert.DeserializeObject<Dictionary<string, List<RiftMark>>>)
                 .Pipe(state.SetRiftMarks);
         }
-        Plugin.Log.LogFatal(JsonConvert.SerializeObject(state.RiftMarks));
-        // TODO: don't let this prevent loading the track
+        // TODO: don't let this prevent loading the track when deserialization fails
     }
 }

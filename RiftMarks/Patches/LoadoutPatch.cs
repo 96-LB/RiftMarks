@@ -89,7 +89,6 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
             BeatModeBackgroundColor = Slider._selectedBackgroundColor;
         }
 
-        Plugin.Log.LogFatal($"Updating colors to {(UsingMarks ? MarkModeBackgroundColor : BeatModeBackgroundColor)}");
         Slider._selectedFillColor = UsingMarks ? MarkModeFillColor : BeatModeFillColor;
         Slider._selectedBackgroundColor = UsingMarks ? MarkModeBackgroundColor : BeatModeBackgroundColor;
         Slider.RefreshVisuals();
