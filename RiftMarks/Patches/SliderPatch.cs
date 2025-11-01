@@ -1,4 +1,5 @@
-﻿using Shared.Audio;
+﻿using HarmonyLib;
+using Shared.Audio;
 using Shared.MenuOptions;
 using System;
 using UnityEngine;
@@ -7,14 +8,9 @@ namespace RiftMarks.Patches;
 
 
 public class SliderData : State<RangeSliderOptionController, SliderData> {
+
     public RiftMarkList? CurrentMarkList { get; set; }
-    public bool SelectionHasMarks => CurrentMarkList?.HasMarks ?? false;
-    public int CurrentMarkCount => CurrentMarkList?.MarkCount ?? 0;
-    public bool UsingMarks => SelectionHasMarks && MarkModeEnabled;
-
-    public SliderOptionData? MinOption => Instance.MinControlOption?.Pipe(SliderOptionData.Of);
-    public SliderOptionData? MaxOption => Instance.MaxControlOption?.Pipe(SliderOptionData.Of);
-
+    public int MaxBeats { get; set; }
     public bool MarkModeEnabled { get; private set; }
     public bool InitializedSliders { get; private set; }
 
@@ -24,6 +20,14 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     public Color MarkModeBackgroundColor { get; private set; } = new(0.3f, 0.4f, 0.5f);
 
     public event Action? OnInitializeRange;
+
+    public bool SelectionHasMarks => CurrentMarkList?.HasMarks ?? false;
+    public int CurrentMarkCount => CurrentMarkList?.MarkCount ?? 0;
+    public bool UsingMarks => SelectionHasMarks && MarkModeEnabled;
+
+    public SliderOptionData? MinOption => Instance.MinControlOption?.Pipe(SliderOptionData.Of);
+    public SliderOptionData? MaxOption => Instance.MaxControlOption?.Pipe(SliderOptionData.Of);
+
 
     public void InitializeSliders() {
         if(InitializedSliders) {
@@ -87,5 +91,30 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
         Instance._selectedFillColor = UsingMarks ? MarkModeFillColor : BeatModeFillColor;
         Instance._selectedBackgroundColor = UsingMarks ? MarkModeBackgroundColor : BeatModeBackgroundColor;
         Instance.RefreshVisuals();
+    }
+}
+
+
+[HarmonyPatch(typeof(RangeSliderOptionController))]
+public static class SliderPatch {
+    [HarmonyPatch(nameof(RangeSliderOptionController.RaiseOnMinMaxChanged))]
+    [HarmonyPrefix]
+    public static void RaiseOnMinMaxChanged_Pre(RangeSliderOptionController __instance, ref Vector2Int? __state) {
+        var state = SliderData.Of(__instance);
+        if(state.UsingMarks) {
+            __state = new(__instance._sliderValueMin, __instance._sliderValueMax);
+            __instance._sliderValueMin = Mathf.Clamp(state.CurrentMarkList!.GetBeat(__instance._sliderValueMin), 0, state.MaxBeats);
+            __instance._sliderValueMax = Mathf.Clamp(state.CurrentMarkList.GetBeat(__instance._sliderValueMax), __instance._sliderValueMin, state.MaxBeats);
+        }
+    }
+
+    [HarmonyPatch(nameof(RangeSliderOptionController.RaiseOnMinMaxChanged))]
+    [HarmonyPostfix]
+    public static void RaiseOnMinMaxChanged_Post(RangeSliderOptionController __instance, ref Vector2Int? __state) {
+        var state = SliderData.Of(__instance);
+        if(state.UsingMarks && __state.HasValue) {
+            __instance._sliderValueMin = __state.Value.x;
+            __instance._sliderValueMax = __state.Value.y;
+        }
     }
 }

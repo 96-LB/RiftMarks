@@ -25,6 +25,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
         if(Slider is not null) {
             Slider.SetMarkMode(true);
             Slider.CurrentMarkList = CurrentMarkList;
+            Slider.MaxBeats = Mathf.CeilToInt(Instance._totalBeats);
         }
     }
 }
@@ -45,15 +46,5 @@ public static class LoadoutPatch {
         var state = LoadoutState.Of(__instance);
         state.UpdateSlider();
         state.Slider?.InitializePracticeBeatRange();
-    }
-
-    [HarmonyPatch(nameof(LoadoutScreenManager.HandlePracticeBeatRangeChanged))]
-    [HarmonyPrefix]
-    public static void HandlePracticeBeatRangeChanged(LoadoutScreenManager __instance, ref int min, ref int max) {
-        var state = LoadoutState.Of(__instance);
-        if((!state.Slider?.UsingMarks ?? false) && state.CurrentMarkList is not null) {
-            min = Mathf.Clamp(state.CurrentMarkList.GetBeat(min), 0, Mathf.CeilToInt(__instance._totalBeats));
-            max = Mathf.Clamp(state.CurrentMarkList.GetBeat(max), min, Mathf.CeilToInt(__instance._totalBeats));
-        }
     }
 }

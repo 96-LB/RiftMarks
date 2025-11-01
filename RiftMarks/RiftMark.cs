@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace RiftMarks;
+
 
 public class RiftMark {
     public int Beat { get; set; }
