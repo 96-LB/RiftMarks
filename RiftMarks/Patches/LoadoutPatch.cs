@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using HarmonyLib;
+using Shared.Audio;
 using Shared.MenuOptions;
 using Shared.TrackSelection;
 using System.Security.Cryptography;
@@ -55,8 +56,10 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
                 newMin = CurrentMarkList!.GetBeat(newMin);
                 newMax = CurrentMarkList!.GetBeat(newMax) - 1;
             }
+            AudioManager.Instance.PlayAudioEvent(Instance._confirmCustomSeedSfxEventRef, shouldApplyLatency: false);
             // TODO: play sound effect
         } else {
+            AudioManager.Instance.PlayAudioEvent(Instance._deselectCustomSeedSfxEventRef, shouldApplyLatency: false);
             // TODO: play error sound effect
         }
         Slider?.SetCurrentValueMin(newMin);

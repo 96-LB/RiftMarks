@@ -43,6 +43,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>lib\RiftOfTheNecroDancer.dll</HintPath>
     </Reference>
+    <Reference Include="FMODUnity">
+      <HintPath>lib\FMODUnity.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.InputSystem">
       <HintPath>lib\Unity.InputSystem.dll</HintPath>
     </Reference>
