@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RhythmRift;
 using Shared.Audio;
 using Shared.MenuOptions;
 using System;
@@ -12,15 +13,12 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     public RiftMarkList? CurrentMarkList { get; set; }
     public int MaxBeats { get; set; }
     public bool MarkModeEnabled { get; private set; }
-    public bool InitializedSliders { get; private set; }
 
     public Color BeatModeFillColor { get; private set; } = Color.clear;
     public Color BeatModeBackgroundColor { get; private set; } = Color.clear;
     public Color MarkModeFillColor { get; private set; } = new(0.4f, 0.8f, 1.0f);
     public Color MarkModeBackgroundColor { get; private set; } = new(0.3f, 0.4f, 0.5f);
-
-    public event Action? OnInitializeRange;
-
+    
     public bool SelectionHasMarks => CurrentMarkList?.HasMarks ?? false;
     public int CurrentMarkCount => CurrentMarkList?.MarkCount ?? 0;
     public bool UsingMarks => SelectionHasMarks && MarkModeEnabled;
@@ -30,13 +28,14 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
 
 
     public void InitializeSliders() {
-        if(InitializedSliders) {
-            return;
-        }
-        InitializedSliders = true;
-
-        MinOption?.Pipe(x => x.OnModeSwitch += ToggleMarkMode);
-        MaxOption?.Pipe(x => x.OnModeSwitch += ToggleMarkMode);
+        MinOption?.Pipe(x => {
+            x.OnModeSwitch -= ToggleMarkMode;
+            x.OnModeSwitch += ToggleMarkMode;
+        });
+        MaxOption?.Pipe(x => {
+            x.OnModeSwitch -= ToggleMarkMode;
+            x.OnModeSwitch += ToggleMarkMode;
+        });
     }
 
     public void SetMarkMode(bool enabled) {
@@ -65,18 +64,15 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     }
 
     public void InitializePracticeBeatRange() {
-        OnInitializeRange?.Invoke();
-
-        UpdateColors();
-        if(!UsingMarks) {
-            return;
-        }
-
-        var max = CurrentMarkCount;
-        Instance.SetSliderMinimumDifference(1);
+        var diff = UsingMarks ? 1 : RRUtils.PracticeModeMinimumPracticeModeLength;
+        Instance.SetSliderMinimumDifference(diff);
+        
+        var max = UsingMarks ? CurrentMarkCount : MaxBeats;
         Instance.SetSliderBounds(0, max);
-        Instance.SetCurrentValueMax(max);
         Instance.SetCurrentValueMin(0);
+        Instance.SetCurrentValueMax(max);
+        
+        UpdateColors();
     }
 
     public void UpdateColors() {

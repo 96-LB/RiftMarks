@@ -11,21 +11,17 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
     public SliderData? Slider => Instance._practiceBeatRangeSlider?.Pipe(SliderData.Of);
     
     public void Initialize() {
-        if(Slider is not null) {
-            Slider.InitializeSliders();
-            Slider.OnInitializeRange -= Instance.InitializePracticeBeatRange;
-            Slider.OnInitializeRange += Instance.InitializePracticeBeatRange;
-        }
-
+        Slider?.InitializeSliders();
         Sfx.SwitchMarkMode = Instance._confirmCustomSeedSfxEventRef;
         Sfx.MarkModeError = Instance._deselectCustomSeedSfxEventRef;
     }
 
     public void UpdateSlider() {
         if(Slider is not null) {
-            Slider.SetMarkMode(true);
             Slider.CurrentMarkList = CurrentMarkList;
             Slider.MaxBeats = Mathf.CeilToInt(Instance._totalBeats);
+            Slider.SetMarkMode(true);
+            Slider.InitializePracticeBeatRange();
         }
     }
 }
@@ -45,6 +41,5 @@ public static class LoadoutPatch {
     public static void ShowImpl(LoadoutScreenManager __instance) {
         var state = LoadoutState.Of(__instance);
         state.UpdateSlider();
-        state.Slider?.InitializePracticeBeatRange();
     }
 }
