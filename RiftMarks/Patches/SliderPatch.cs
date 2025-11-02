@@ -59,7 +59,7 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
             }
         }
         if(playSfx) {
-            var sfx = MarkModeEnabled ? Sfx.SwitchMarkMode : Sfx.MarkModeError;
+            var sfx = UsingMarks ? Sfx.SwitchMarkMode : Sfx.MarkModeError;
             AudioManager.Instance.PlayAudioEvent(sfx, shouldApplyLatency: false);
         }
         Instance.SetCurrentValueMin(min);
