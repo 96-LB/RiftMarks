@@ -44,23 +44,44 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     }
 
     public void ToggleMarkMode() {
-        var newMin = Instance.CurrentValueMin;
-        var newMax = Instance.CurrentValueMax;
+        ToggleMarkMode(true);
+    }
+
+    public void ToggleMarkMode(bool playSfx) {
+        var min = Instance.CurrentValueMin;
+        var max = Instance.CurrentValueMax;
         SetMarkMode(!MarkModeEnabled);
         if(SelectionHasMarks) {
             if(MarkModeEnabled) {
-                newMin = CurrentMarkList!.GetIndex(newMin);
-                newMax = CurrentMarkList!.GetIndex(newMax) + 1;
+                (min, max) = BeatToMarkRange(min, max);
             } else {
-                newMin = CurrentMarkList!.GetBeat(newMin);
-                newMax = CurrentMarkList!.GetBeat(newMax) - 1;
+                (min, max) = MarkToBeatRange(min, max);
             }
-            AudioManager.Instance.PlayAudioEvent(Sfx.SwitchMarkMode, shouldApplyLatency: false);
-        } else {
-            AudioManager.Instance.PlayAudioEvent(Sfx.MarkModeError, shouldApplyLatency: false);
         }
-        Instance.SetCurrentValueMin(newMin);
-        Instance.SetCurrentValueMax(newMax);
+        if(playSfx) {
+            var sfx = MarkModeEnabled ? Sfx.SwitchMarkMode : Sfx.MarkModeError;
+            AudioManager.Instance.PlayAudioEvent(sfx, shouldApplyLatency: false);
+        }
+        Instance.SetCurrentValueMin(min);
+        Instance.SetCurrentValueMax(max);
+    }
+
+    public (int beatMin, int beatMax) MarkToBeatRange(int markMin, int markMax) {
+        if(CurrentMarkList is null) {
+            throw new InvalidOperationException("No current mark list available for conversion.");
+        }
+        var beatMin = CurrentMarkList.GetBeat(markMin);
+        var beatMax = CurrentMarkList.GetBeat(markMax) - 1;
+        return (beatMin, beatMax);
+    }
+
+    public (int markMin, int markMax) BeatToMarkRange(int beatMin, int beatMax) {
+        if(CurrentMarkList is null) {
+            throw new InvalidOperationException("No current mark list available for conversion.");
+        }
+        var markMin = CurrentMarkList.GetIndex(beatMin);
+        var markMax = CurrentMarkList.GetIndex(beatMax) + 1;
+        return (markMin, markMax);
     }
 
     public void InitializePracticeBeatRange() {
@@ -98,9 +119,10 @@ public static class SliderPatch {
     public static void RaiseOnMinMaxChanged_Pre(RangeSliderOptionController __instance, ref Vector2Int? __state) {
         var state = SliderData.Of(__instance);
         if(state.UsingMarks) {
+            var (min, max) = state.MarkToBeatRange(__instance._sliderValueMin, __instance._sliderValueMax);
             __state = new(__instance._sliderValueMin, __instance._sliderValueMax);
-            __instance._sliderValueMin = Mathf.Clamp(state.CurrentMarkList!.GetBeat(__instance._sliderValueMin), 0, state.MaxBeats);
-            __instance._sliderValueMax = Mathf.Clamp(state.CurrentMarkList.GetBeat(__instance._sliderValueMax), __instance._sliderValueMin, state.MaxBeats);
+            __instance._sliderValueMin = Mathf.Clamp(min, 0, state.MaxBeats);
+            __instance._sliderValueMax = Mathf.Clamp(max, __instance._sliderValueMin, state.MaxBeats);
         }
     }
 
