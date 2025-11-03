@@ -2,6 +2,7 @@
 using Shared;
 using Shared.SceneLoading.Payloads;
 using TicToc.Localization.Components;
+using TMPro;
 using UnityEngine;
 
 namespace RiftMarks.Patches;
@@ -44,15 +45,18 @@ public class PauseState : State<PauseScreen, PauseState> {
 
         Instance._hasChangedPracticeBeatRange = false;
 
-        var title = Object.Instantiate(Instance._practiceModeSpeedCarousel._title, Instance._contentParent.transform);
-        Object.Destroy(title.GetComponent<BaseLocalizer>());
-        foreach(Transform child in title.transform) {
+        var label = Object.Instantiate(Instance._practiceModeSpeedCarousel._title, Instance._contentParent.transform);
+        Object.Destroy(label.GetComponent<BaseLocalizer>());
+        foreach(Transform child in label.transform) {
             Object.Destroy(child.gameObject);
         }
 
-        title.GetComponent<RectTransform>().anchoredPosition = new(0, 290);
+        label.alignment = TextAlignmentOptions.Baseline;
+        label.enableWordWrapping = false;
+
+        label.GetComponent<RectTransform>().anchoredPosition = new(0, 280);
         
-        Slider.SetLabel(title);
+        Slider.SetLabel(label);
     }
 }
 
