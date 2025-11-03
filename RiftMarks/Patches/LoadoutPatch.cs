@@ -1,19 +1,48 @@
 ﻿using HarmonyLib;
 using Shared.TrackSelection;
+using TicToc.Localization.Components;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RiftMarks.Patches;
 
 
 public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
+    public bool HasInitialized { get; private set; } = false;
+
     public MetadataState? Metadata => Instance._trackMetadata?.Pipe(MetadataState.Of);
     public RiftMarkList? CurrentMarkList => Metadata?.GetMarks(Instance._currentDifficulty);
     public SliderData? Slider => Instance._practiceBeatRangeSlider?.Pipe(SliderData.Of);
     
     public void Initialize() {
-        Slider?.InitializeSliders();
+        if(HasInitialized || Slider is null) {
+            return;
+        }
+        HasInitialized = true;
+            
+        Slider.InitializeSliders();
         Sfx.SwitchMarkMode = Instance._confirmCustomSeedSfxEventRef;
         Sfx.MarkModeError = Instance._deselectCustomSeedSfxEventRef;
+
+        var label = Object.Instantiate(Instance._practiceBeatRangeSlider._textLabel, Instance._practiceModeExtraOptionsObject.transform);
+        Object.Destroy(label.GetComponent<BaseLocalizer>());
+        Object.Destroy(label.GetComponent<ContentSizeFitter>());
+        foreach(Transform child in label.transform) {
+            Object.Destroy(child.gameObject);
+        }
+        
+        label.alignment = TextAlignmentOptions.BaselineLeft;
+        label.enableWordWrapping = false;
+        label.fontStyle &= ~FontStyles.Bold & ~FontStyles.UpperCase;
+        label.fontSize *= 0.5f;
+
+        var transform = label.GetComponent<RectTransform>();
+        transform.anchorMin = new(0, 0);
+        transform.anchorMax = new(0, 0);
+        transform.anchoredPosition = new(465, -2);
+        
+        Slider.SetLabel(label);
     }
 
     public void UpdateSlider() {
@@ -28,7 +57,6 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
 
 [HarmonyPatch(typeof(LoadoutScreenManager))]
 public static class LoadoutPatch {
-    
     [HarmonyPatch(nameof(LoadoutScreenManager.ConfigureSelectableOptions))]
     [HarmonyPostfix]
     public static void ConfigureSelectableOptions(LoadoutScreenManager __instance) {
@@ -41,5 +69,12 @@ public static class LoadoutPatch {
     public static void ShowImpl(LoadoutScreenManager __instance) {
         var state = LoadoutState.Of(__instance);
         state.UpdateSlider();
+    }
+
+    [HarmonyPatch(nameof(LoadoutScreenManager.InitializePracticeBeatRange))]
+    [HarmonyPostfix]
+    public static void InitializePracticeBeatRange(LoadoutScreenManager __instance) {
+        var state = LoadoutState.Of(__instance);
+        state.Slider?.InitializePracticeBeatRange();
     }
 }

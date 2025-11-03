@@ -3,6 +3,7 @@ using RhythmRift;
 using Shared.Audio;
 using Shared.MenuOptions;
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace RiftMarks.Patches;
@@ -10,13 +11,16 @@ namespace RiftMarks.Patches;
 
 public class SliderData : State<RangeSliderOptionController, SliderData> {
 
+    public static bool LastMarkMode { get; private set; }
+
     public RiftMarkList? CurrentMarkList { get; set; }
     public int MaxBeats { get; set; }
     public bool MarkModeEnabled { get; private set; }
+    public TMP_Text? Label { get; private set; }
 
     public Color BeatModeFillColor { get; private set; } = Color.clear;
     public Color BeatModeBackgroundColor { get; private set; } = Color.clear;
-    public Color MarkModeFillColor { get; private set; } = new(0.4f, 0.8f, 1.0f);
+    public Color MarkModeFillColor { get; private set; } = new(0.2f, 0.8f, 1.0f);
     public Color MarkModeBackgroundColor { get; private set; } = new(0.3f, 0.4f, 0.5f);
     
     public bool SelectionHasMarks => CurrentMarkList?.HasMarks ?? false;
@@ -39,7 +43,7 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     }
 
     public void SetMarkMode(bool enabled) {
-        MarkModeEnabled = enabled;
+        LastMarkMode = MarkModeEnabled = enabled;
         InitializePracticeBeatRange();
     }
 
@@ -94,6 +98,7 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
         Instance.SetCurrentValueMax(max);
         
         UpdateColors();
+        UpdateLabel();
     }
 
     public void UpdateColors() {
@@ -108,6 +113,23 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
         Instance._selectedFillColor = UsingMarks ? MarkModeFillColor : BeatModeFillColor;
         Instance._selectedBackgroundColor = UsingMarks ? MarkModeBackgroundColor : BeatModeBackgroundColor;
         Instance.RefreshVisuals();
+    }
+
+    public void SetLabel(TMP_Text label) {
+        Label = label;
+        UpdateLabel();
+    }
+
+    public void UpdateLabel() {
+        if(Label is null) {
+            return;
+        }
+
+        Label.color = MarkModeFillColor;
+        var minText = CurrentMarkList?.GetName(Instance.CurrentValueMin);
+        var maxText = CurrentMarkList?.GetName(Instance.CurrentValueMax - 1);
+        var text = !UsingMarks ? "" : Instance._isMinControlSelected ? minText : Instance._isMaxControlSelected ? maxText : "";
+        Label.SetText(text ?? "");
     }
 }
 
@@ -134,5 +156,12 @@ public static class SliderPatch {
             __instance._sliderValueMin = __state.Value.x;
             __instance._sliderValueMax = __state.Value.y;
         }
+    }
+
+    [HarmonyPatch(nameof(RangeSliderOptionController.UpdateVisualElements))]
+    [HarmonyPostfix]
+    public static void UpdateVisualElements(RangeSliderOptionController __instance) {
+        var state = SliderData.Of(__instance);
+        state.UpdateLabel();
     }
 }
