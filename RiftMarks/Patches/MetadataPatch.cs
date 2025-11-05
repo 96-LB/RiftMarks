@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Shared;
 using Shared.TrackData;
 using Shared.Utilities;
@@ -11,6 +12,7 @@ namespace RiftMarks.Patches;
 
 public class MetadataState : State<ITrackMetadata, MetadataState> {
     const string DEFAULT = "DEFAULT";
+    const string RIFTMARKS = "RiftMarks.json";
     public Dictionary<string, RiftMarkList> RiftMarks { get; } = [];
     
     public void SetRiftMarks(Dictionary<string, List<RiftMark>>? marks) {
@@ -31,6 +33,19 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
         }
         return null;
     }
+
+    public void LoadRiftMarks(string basePath) {
+        var markPath = Path.Combine(basePath, RIFTMARKS);
+        if(FileUtils.IsFile(markPath)) {
+            try {
+                FileUtils.ReadString(markPath)?
+                    .Pipe(JsonConvert.DeserializeObject<Dictionary<string, List<RiftMark>>>)
+                    .Pipe(SetRiftMarks);
+            } catch(JsonException e) {
+                Plugin.Log.LogWarning($"Failed to deserialize RiftMarks.json for track at {basePath}: {e.Message}");
+            }
+        }
+    }
 }
 
 [HarmonyPatch(typeof(LocalTrackMetadata))]
@@ -41,14 +56,7 @@ public static class MetadataPatch {
         if(__result is null) {
             return;
         }
-
         var state = MetadataState.Of(__result);
-        var markPath = Path.Combine(basePath, "RiftMarks.json");
-        if(FileUtils.IsFile(markPath)) {
-            FileUtils.ReadString(markPath)?
-                .Pipe(JsonConvert.DeserializeObject<Dictionary<string, List<RiftMark>>>)
-                .Pipe(state.SetRiftMarks);
-        }
-        // TODO: don't let this prevent loading the track when deserialization fails
+        state.LoadRiftMarks(basePath);
     }
 }
