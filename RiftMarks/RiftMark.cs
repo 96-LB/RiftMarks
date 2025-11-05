@@ -6,7 +6,7 @@ namespace RiftMarks;
 
 public class RiftMark {
     public int Beat { get; set; }
-    public string Name { get; set; } = "";
+    public string? Name { get; set; }
 }
 
 public class RiftMarkList {
@@ -18,7 +18,7 @@ public class RiftMarkList {
     public RiftMarkList(IEnumerable<RiftMark> riftMarks) {
         _riftMarks.AddRange(riftMarks.OrderBy(r => r.Beat));
         if(_riftMarks.Count > 0 && _riftMarks[0].Beat != 0) {
-            _riftMarks.Insert(0, new RiftMark { Beat = 0, Name = "Start" });
+            _riftMarks.Insert(0, new RiftMark { Beat = 0 });
         }
     }
 
@@ -37,9 +37,20 @@ public class RiftMarkList {
     public int GetIndex(int beat) => _riftMarks.TakeWhile(x => x.Beat <= beat).Count() - 1;
 
     public string GetName(int index) {
-        if(index < 0 || index >= _riftMarks.Count) {
-            return "";
+        if(index < 0) {
+            return "Start";
         }
-        return _riftMarks[index].Name;
+        if(index >= _riftMarks.Count) {
+            return "End";
+        }
+        var mark = _riftMarks[index];
+        if(mark.Name != null) {
+            return mark.Name;
+        }
+        if(index == _riftMarks.Count - 1) {
+            return $"Beat {mark.Beat} to End";
+        }
+        var nextMark = _riftMarks[index + 1];
+        return $"Beat {mark.Beat} to {nextMark.Beat}";
     }
 }
