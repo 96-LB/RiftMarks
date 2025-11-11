@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Shared;
 using Shared.TrackSelection;
 using TicToc.Localization.Components;
 using TMPro;
@@ -20,7 +21,10 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
             return;
         }
         HasInitialized = true;
-            
+
+        Instance.OnDifficultyChanged -= HandleDifficultyChanged;
+        Instance.OnDifficultyChanged += HandleDifficultyChanged;
+
         Slider.InitializeSliders();
         Sfx.SwitchMarkMode = Instance._confirmCustomSeedSfxEventRef;
         Sfx.MarkModeError = Instance._deselectCustomSeedSfxEventRef;
@@ -52,6 +56,10 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
             Slider.SetMarkMode(true);
             Slider.InitializePracticeBeatRange();
         }
+    }
+
+    public void HandleDifficultyChanged(Difficulty difficulty) {
+        UpdateSlider();
     }
 }
 
