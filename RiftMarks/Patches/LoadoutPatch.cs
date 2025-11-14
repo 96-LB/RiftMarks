@@ -63,6 +63,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
     }
 }
 
+
 [HarmonyPatch(typeof(LoadoutScreenManager))]
 public static class LoadoutPatch {
     [HarmonyPatch(nameof(LoadoutScreenManager.ConfigureSelectableOptions))]

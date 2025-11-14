@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Shared;
 using Shared.TrackData;
 using Shared.Utilities;
@@ -16,7 +15,7 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
     public Dictionary<string, RiftMarkList> RiftMarks { get; } = [];
     
     public void SetRiftMarks(Dictionary<string, List<RiftMark>>? marks) {
-        RiftMarks.Clear(); ;
+        RiftMarks.Clear();
         
         foreach(var (key, value) in marks ?? []) {
             RiftMarks[key.ToUpperInvariant()] = new RiftMarkList(value);
@@ -47,6 +46,7 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
         }
     }
 }
+
 
 [HarmonyPatch(typeof(LocalTrackMetadata))]
 public static class MetadataPatch {

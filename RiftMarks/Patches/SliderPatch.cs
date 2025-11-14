@@ -4,14 +4,12 @@ using Shared.Audio;
 using Shared.MenuOptions;
 using System;
 using TMPro;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace RiftMarks.Patches;
 
 
 public class SliderData : State<RangeSliderOptionController, SliderData> {
-
     public static bool LastMarkMode { get; private set; }
 
     public RiftMarkList? CurrentMarkList { get; set; }

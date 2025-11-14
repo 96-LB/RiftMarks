@@ -9,6 +9,7 @@ public class RiftMark {
     public string? Name { get; set; }
 }
 
+
 public class RiftMarkList {
     public int MarkCount => _riftMarks.Count;
     public bool HasMarks => MarkCount > 0;

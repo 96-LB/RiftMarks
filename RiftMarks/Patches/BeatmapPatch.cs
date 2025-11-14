@@ -1,14 +1,12 @@
 ﻿using HarmonyLib;
 using RhythmRift;
 using Shared.RhythmEngine;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 
 namespace RiftMarks.Patches;
-
 
 
 // various patches to reduce excessive logging and improve performance
