@@ -4,6 +4,7 @@ using Shared.Audio;
 using Shared.MenuOptions;
 using System;
 using TMPro;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace RiftMarks.Patches;
@@ -75,7 +76,9 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
             throw new InvalidOperationException("No current mark list available for conversion.");
         }
         var beatMin = CurrentMarkList.GetBeat(markMin);
-        var beatMax = CurrentMarkList.GetBeat(markMax) - 1;
+        var beatMax = CurrentMarkList.GetBeat(markMax + 1) - 1;
+        beatMin = Mathf.Clamp(beatMin, 0, MaxBeats);
+        beatMax = Mathf.Clamp(beatMax, beatMin, MaxBeats);
         return (beatMin, beatMax);
     }
 
@@ -84,17 +87,18 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
             throw new InvalidOperationException("No current mark list available for conversion.");
         }
         var markMin = CurrentMarkList.GetIndex(beatMin);
-        var markMax = CurrentMarkList.GetIndex(beatMax) + 1;
+        var markMax = CurrentMarkList.GetIndex(beatMax);
         return (markMin, markMax);
     }
 
     public void InitializePracticeBeatRange() {
-        var diff = UsingMarks ? 1 : RRUtils.PracticeModeMinimumPracticeModeLength;
+        var diff = UsingMarks ? 0 : RRUtils.PracticeModeMinimumPracticeModeLength;
         Instance.SetSliderMinimumDifference(diff);
         
         var max = UsingMarks ? CurrentMarkCount : MaxBeats;
-        Instance.SetSliderBounds(0, max);
-        Instance.SetCurrentValueMin(0);
+        var min = UsingMarks ? 1 : 0;
+        Instance.SetSliderBounds(min, max);
+        Instance.SetCurrentValueMin(min);
         Instance.SetCurrentValueMax(max);
         
         UpdateColors();
@@ -125,11 +129,17 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
             return;
         }
 
+        if(!UsingMarks) {
+            Label.SetText("");
+            return;
+        }
+
+        var (minBeat, maxBeat) = MarkToBeatRange(Instance.CurrentValueMin, Instance.CurrentValueMax);
+        var minText = CurrentMarkList!.GetName(Instance.CurrentValueMin) ?? $"Beat {minBeat}";
+        var maxText = CurrentMarkList!.GetName(Instance.CurrentValueMax) ?? $"Beat {maxBeat}";
+        var text = Instance._isMinControlSelected ? minText : Instance._isMaxControlSelected ? maxText : "";
+        Label.SetText(text);
         Label.color = MarkModeFillColor;
-        var minText = CurrentMarkList?.GetName(Instance.CurrentValueMin);
-        var maxText = CurrentMarkList?.GetName(Instance.CurrentValueMax - 1);
-        var text = !UsingMarks ? "" : Instance._isMinControlSelected ? minText : Instance._isMaxControlSelected ? maxText : "";
-        Label.SetText(text ?? "");
     }
 }
 
@@ -141,10 +151,10 @@ public static class SliderPatch {
     public static void RaiseOnMinMaxChanged_Pre(RangeSliderOptionController __instance, ref Vector2Int? __state) {
         var state = SliderData.Of(__instance);
         if(state.UsingMarks) {
-            var (min, max) = state.MarkToBeatRange(__instance._sliderValueMin, __instance._sliderValueMax);
             __state = new(__instance._sliderValueMin, __instance._sliderValueMax);
-            __instance._sliderValueMin = Mathf.Clamp(min, 0, state.MaxBeats);
-            __instance._sliderValueMax = Mathf.Clamp(max, __instance._sliderValueMin, state.MaxBeats);
+            var (min, max) = state.MarkToBeatRange(__instance._sliderValueMin, __instance._sliderValueMax);
+            __instance._sliderValueMin = min;
+            __instance._sliderValueMax = max;
         }
     }
 

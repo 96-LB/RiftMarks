@@ -23,34 +23,23 @@ public class RiftMarkList {
     }
 
     public int GetBeat(int index) {
-        if(index < 0) {
+        if(index <= 0) {
             return 0;
         }
         
-        if(index >= _riftMarks.Count) {
+        if(index > _riftMarks.Count) {
             return int.MaxValue;
         }
 
-        return _riftMarks[index].Beat;
+        return _riftMarks[index - 1].Beat;
     }
 
-    public int GetIndex(int beat) => _riftMarks.TakeWhile(x => x.Beat <= beat).Count() - 1;
+    public int GetIndex(int beat) => _riftMarks.TakeWhile(x => x.Beat <= beat).Count();
 
-    public string GetName(int index) {
-        if(index < 0) {
-            return "Start";
+    public string? GetName(int index) {
+        if(0 < index && index <= _riftMarks.Count) {
+            return _riftMarks[index - 1].Name;
         }
-        if(index >= _riftMarks.Count) {
-            return "End";
-        }
-        var mark = _riftMarks[index];
-        if(mark.Name != null) {
-            return mark.Name;
-        }
-        if(index == _riftMarks.Count - 1) {
-            return $"Beat {mark.Beat} to End";
-        }
-        var nextMark = _riftMarks[index + 1];
-        return $"Beat {mark.Beat} to {nextMark.Beat}";
+        return null;
     }
 }
