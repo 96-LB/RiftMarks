@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RiftOfTheNecroManager;
 using Shared;
 using Shared.TrackSelection;
 using TicToc.Localization.Components;

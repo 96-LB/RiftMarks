@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RhythmRift;
+using RiftOfTheNecroManager;
 using Shared.Audio;
 using Shared.MenuOptions;
 using System;

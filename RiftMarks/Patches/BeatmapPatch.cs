@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RhythmRift;
+using RiftOfTheNecroManager;
 using Shared.RhythmEngine;
 using System.Collections.Generic;
 using System.Reflection;
@@ -26,7 +27,7 @@ public static class BeatmapPatch {
         // there's no option to disable it so we replace Debug.Log calls with no-ops in the IL
 
         if(DebugLogMethod is null) {
-            Plugin.Log.LogError("Could not find Debug.Log method for transpiler!");
+            Log.Error("Could not find Debug.Log method for transpiler!");
         }
 
         foreach(var instruction in instructions) {

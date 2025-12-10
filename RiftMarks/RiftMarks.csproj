@@ -46,6 +46,9 @@
     <Reference Include="FMODUnity">
       <HintPath>lib\FMODUnity.dll</HintPath>
     </Reference>
+    <Reference Include="RiftOfTheNecroManager">
+      <HintPath>lib\RiftOfTheNecroManager.dll</HintPath>
+    </Reference>
     <Reference Include="TicToc.Localization">
       <HintPath>lib\TicToc.Localization.dll</HintPath>
     </Reference>

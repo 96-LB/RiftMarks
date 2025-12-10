@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RiftOfTheNecroManager;
 using Shared;
 using Shared.SceneLoading.Payloads;
 using TicToc.Localization.Components;

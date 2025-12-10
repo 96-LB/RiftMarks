@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Newtonsoft.Json;
+using RiftOfTheNecroManager;
 using Shared;
 using Shared.TrackData;
 using Shared.Utilities;
@@ -41,7 +42,7 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
                     .Pipe(JsonConvert.DeserializeObject<Dictionary<string, List<RiftMark>>>)
                     .Pipe(SetRiftMarks);
             } catch(JsonException e) {
-                Plugin.Log.LogWarning($"Failed to deserialize RiftMarks.json for track at {basePath}: {e.Message}");
+                Log.Warning($"Failed to deserialize RiftMarks.json for track at {basePath}: {e.Message}");
             }
         }
     }

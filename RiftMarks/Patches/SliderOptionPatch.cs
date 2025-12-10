@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RiftOfTheNecroManager;
 using Shared.MenuOptions;
 using System;
 using System.Collections.Generic;
