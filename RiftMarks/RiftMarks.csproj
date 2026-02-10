@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>RiftMarks</AssemblyName>
     <Product>RiftMarks</Product>
-    <Version>0.1.1</Version>
+    <Version>1.0.0-beta</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
@@ -45,6 +45,9 @@
     </Reference>
     <Reference Include="FMODUnity">
       <HintPath>lib\FMODUnity.dll</HintPath>
+    </Reference>
+    <Reference Include="RiftOfTheNecroManager">
+      <HintPath>lib\RiftOfTheNecroManager.dll</HintPath>
     </Reference>
     <Reference Include="TicToc.Localization">
       <HintPath>lib\TicToc.Localization.dll</HintPath>

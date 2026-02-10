@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RhythmRift;
+using RiftOfTheNecroManager;
 using Shared.Audio;
 using Shared.MenuOptions;
 using System;
@@ -49,7 +50,7 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     public void ToggleMarkMode() {
         ToggleMarkMode(true);
     }
-
+    
     public void ToggleMarkMode(bool playSfx) {
         var min = Instance.CurrentValueMin;
         var max = Instance.CurrentValueMax;
@@ -62,13 +63,13 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
             }
         }
         if(playSfx) {
-            var sfx = UsingMarks ? Sfx.SwitchMarkMode : Sfx.MarkModeError;
+            var sfx = UsingMarks ? Sfx.Confirm : Sfx.Cancel;
             AudioManager.Instance.PlayAudioEvent(sfx, shouldApplyLatency: false);
         }
         Instance.SetCurrentValueMin(min);
         Instance.SetCurrentValueMax(max);
     }
-
+    
     public (int beatMin, int beatMax) MarkToBeatRange(int markMin, int markMax) {
         if(CurrentMarkList is null) {
             throw new InvalidOperationException("No current mark list available for conversion.");

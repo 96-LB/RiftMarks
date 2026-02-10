@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using RiftOfTheNecroManager;
 using Shared;
+using Shared.MenuOptions;
 using Shared.TrackSelection;
 using TicToc.Localization.Components;
 using TMPro;
@@ -11,7 +13,7 @@ namespace RiftMarks.Patches;
 
 public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
     public bool HasInitialized { get; private set; } = false;
-
+    
     public MetadataState? Metadata => Instance._trackMetadata?.Pipe(MetadataState.Of);
     public RiftMarkList? CurrentMarkList => Metadata?.GetMarks(Instance._currentDifficulty);
     public SliderData? Slider => Instance._practiceBeatRangeSlider?.Pipe(SliderData.Of);
@@ -21,14 +23,12 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
             return;
         }
         HasInitialized = true;
-
+        
         Instance.OnDifficultyChanged -= HandleDifficultyChanged;
         Instance.OnDifficultyChanged += HandleDifficultyChanged;
-
+        
         Slider.InitializeSliders();
-        Sfx.SwitchMarkMode = Instance._confirmCustomSeedSfxEventRef;
-        Sfx.MarkModeError = Instance._deselectCustomSeedSfxEventRef;
-
+        
         var label = Object.Instantiate(Instance._practiceBeatRangeSlider._textLabel, Instance._practiceModeExtraOptionsObject.transform);
         Object.Destroy(label.GetComponent<BaseLocalizer>());
         Object.Destroy(label.GetComponent<ContentSizeFitter>());
@@ -40,7 +40,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
         label.enableWordWrapping = false;
         label.fontStyle &= ~FontStyles.Bold & ~FontStyles.UpperCase;
         label.fontSize *= 0.5f;
-
+        
         var transform = label.GetComponent<RectTransform>();
         transform.anchorMin = new(0, 0);
         transform.anchorMax = new(0, 0);
@@ -48,7 +48,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
         
         Slider.SetLabel(label);
     }
-
+    
     public void UpdateSlider() {
         if(Slider is not null) {
             Slider.CurrentMarkList = CurrentMarkList;
@@ -57,7 +57,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
             Slider.InitializePracticeBeatRange();
         }
     }
-
+    
     public void HandleDifficultyChanged(Difficulty difficulty) {
         UpdateSlider();
     }
