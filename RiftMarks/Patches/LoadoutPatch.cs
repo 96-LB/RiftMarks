@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using RiftOfTheNecroManager;
 using Shared;
-using Shared.MenuOptions;
 using Shared.TrackSelection;
 using TicToc.Localization.Components;
 using TMPro;

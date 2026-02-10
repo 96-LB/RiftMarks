@@ -12,7 +12,6 @@ namespace RiftMarks.Patches;
 
 public class MetadataState : State<ITrackMetadata, MetadataState> {
     const string DEFAULT = "DEFAULT";
-    const string RIFTMARKS = "RiftMarks.json";
     public Dictionary<string, RiftMarkList> RiftMarks { get; } = [];
     
     public void SetRiftMarks(Dictionary<string, List<RiftMark>>? marks) {
@@ -35,14 +34,15 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
     }
 
     public void LoadRiftMarks(string basePath) {
-        var markPath = Path.Combine(basePath, RIFTMARKS);
+        var json = $"{PluginData.Name}.json";
+        var markPath = Path.Combine(basePath, json);
         if(FileUtils.IsFile(markPath)) {
             try {
                 FileUtils.ReadString(markPath)?
                     .Pipe(JsonConvert.DeserializeObject<Dictionary<string, List<RiftMark>>>)
                     .Pipe(SetRiftMarks);
             } catch(JsonException e) {
-                Log.Warning($"Failed to deserialize RiftMarks.json for track at {basePath}: {e.Message}");
+                Log.Warning($"Failed to deserialize {json} for track at {basePath}: {e.Message}");
             }
         }
     }

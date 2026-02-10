@@ -19,7 +19,7 @@ public class RiftMarkList {
     public RiftMarkList(IEnumerable<RiftMark> riftMarks) {
         _riftMarks.AddRange(riftMarks.OrderBy(r => r.Beat));
         if(_riftMarks.Count > 0 && _riftMarks[0].Beat != 0) {
-            _riftMarks.Insert(0, new RiftMark { Beat = 0 });
+            _riftMarks.Insert(0, new() { Beat = 0 });
         }
     }
 
