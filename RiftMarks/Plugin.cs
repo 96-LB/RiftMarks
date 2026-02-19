@@ -5,6 +5,6 @@ namespace RiftMarks;
 
 
 [BepInPlugin("com.lalabuff.necrodancer.riftmarks", "RiftMarks", "1.0.0")]
-[NecroManagerInfo(menuNameOverride: "RiftMarks", isBeta: true)] // TODO: change capitalization?
+[NecroManagerInfo(menuNameOverride: "RiftMarks")] // TODO: change capitalization?
 public class Plugin : RiftPlugin {
 }

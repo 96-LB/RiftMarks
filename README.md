@@ -2,9 +2,10 @@
 
 This project is a mod for Rift of the NecroDancer which allows charters to add "riftmarks" to their custom levels to improve the quality of life in practice mode. A riftmark functions as a checkpoint in the song that can be used to mark important segments or chapters. Players with the mod installed can use the practice mode slider to quickly start the song from a riftmark without having to search for the exact beat. This makes it easier to quickly practice a particular segment or jump to a late point in a long song.
 
-> ⚠️ BepInEx mods are <ins>**not officially supported**</ins> by Rift of the NecroDancer. If you encounter any issues with this mod, please open an issue on this GitHub repository, and do not submit reports to Brace Yourself Games! In order to prevent serious bugs, this mod will automatically disable itself when you update your game, and you will have to return here to download a new, compatible version.
+> [!WARNING]
+> BepInEx mods are <ins>**not officially supported**</ins> by Rift of the NecroDancer. If you encounter any issues with this mod, please open an issue on this GitHub repository, and do not submit reports to Brace Yourself Games!
 
-The current version is <ins>**v0.1.1**</ins> and is compatible with Rift of the NecroDancer Patch 1.11.1 released on 10 December 2025. Downloads for the latest version can be found [here](https://github.com/96-LB/RiftMarks/releases/latest). The changelog can be found [here](Changelog.md).
+The current version is <ins>**v1.0.0**</ins>. Downloads for the latest version can be found [here](https://github.com/96-LB/RiftMarks/releases/latest). The changelog can be found [here](Changelog.md).
 
 
 ## Installation
@@ -14,32 +15,43 @@ RiftMarks runs on BepInEx 5. In order to use this mod, you must first install Be
 ### Installing BepInEx
 1. Navigate to the latest release of BepInEx 5 [here](https://github.com/BepInEx/BepInEx/releases).
 
-    > ⚠️ This mod is only tested for compatibility with BepInEx 5. If the above link takes you to a version of BepInEx 6, check out [the full list of releases](https://github.com/BepInEx/BepInEx/releases).
+> [!WARNING]
+> This mod is only tested for compatibility with BepInEx 5. If the above link takes you to a version of BepInEx 6, check out [the full list of releases](https://github.com/BepInEx/BepInEx/releases).
 
-2. Expand the "Assets" tab at the bottom and download the correct `.zip` file for your operating system.
+2. Expand the "Assets" tab at the bottom and download `BepInEx_win_x64_5.X.Y.Z.zip`.
 
-    > ℹ️ For example, if you use 64-bit Windows, download `BepInEx_win_x64_5.X.Y.Z.zip`.
+> [!IMPORTANT]
+> Download the 64-bit Windows version even if you use a different operating system!, download `BepInEx_win_x64_5.X.Y.Z.zip`.
 
-4. Extract the contents of the `.zip` file into your Rift of the NecroDancer game folder.
+3. Extract the contents of the `.zip` file into your Rift of the NecroDancer game folder.
 
-    > ℹ️ You can find this folder by right clicking on the game in your Steam library and clicking 'Properties'. Then navigate to 'Installed Files' and click 'Browse'.
+> [!TIP]
+> You can find this folder by right clicking on the game in your Steam library and clicking 'Properties'. Then navigate to 'Installed Files' and click 'Browse'.
 
-6. If you're on Mac or Linux, configure Steam to run BepInEx when you launch your game. Follow the guide [here](https://docs.bepinex.dev/articles/advanced/steam_interop.html).
+4. If you're on Mac or Linux, configure Steam to run BepInEx when you launch your game.
 
-7. Run Rift of the NecroDancer to set up BepInEx.
+> [!TIP]
+> Add `WINEDLLOVERRIDES="winhttp=n,b" %command%` to the launch options in the game's properties, or follow the guide [here](https://docs.bepinex.dev/articles/advanced/proton_wine.html).
 
-    > ℹ️ If done correctly, your `BepInEx` folder should now contain several subfolders, such as `BepInEx/plugins`.
+5. Run Rift of the NecroDancer to set up BepInEx.
+
+6. Check that the installation was successful by looking for a folder called `plugins` inside of your `BepInEx` folder.
 
 ### Installing RiftMarks
 1. Navigate to the latest release of RiftMarks [here](https://github.com/96-LB/RiftMarks/releases/latest).
 
-   > ⚠️ Do NOT download the source code using the button at the top of this page. If you're downloading a `.zip`, you are at the wrong place.
+> [!CAUTION]
+> Do NOT download the source code using the button at the top of this page. If you're downloading a `.zip` file, you are at the wrong place.
 
-2. Expand the "Assets" tab at the bottom and download `RiftMarks.dll`.
+2. Expand the "Assets" tab at the bottom and download `RiftOfTheNecroManager.dll` and `RiftMarks.dll`.
+
+> [!TIP]
+> If you have already installed the latest version of `RiftOfTheNecroManager.dll`, you can skip installing it again. Make sure you keep Rift of the NecroManager up to date!
 
 3. Place `RiftMarks.dll` in the `BepInEx/plugins` directory inside the Rift of the NecroDancer game folder.
 
-   > ℹ️ You can find this folder by right clicking on the game in your Steam library and clicking 'Properties'. Then navigate to 'Installed Files' and click 'Browse'.
+> [!TIP]
+> You can find this folder by right clicking on the game in your Steam library and clicking 'Properties'. Then navigate to 'Installed Files' and click 'Browse'.
 
 4. Check that your mod is working by playing a chart which supports RiftMarks.
 
@@ -78,7 +90,7 @@ Here is an example:
         {"Beat": 0},
         {"Beat": 100},
         {"Beat": 200},
-    ]
+    ],
     "Hard": [
         {"Beat": 0, "Name": "Once Upon a Time"},
         {"Beat": 174, "Name": "Start Menu"},
