@@ -43,7 +43,7 @@ public class LoadoutState : State<LoadoutScreenManager, LoadoutState> {
         var transform = label.GetComponent<RectTransform>();
         transform.anchorMin = new(0, 0);
         transform.anchorMax = new(0, 0);
-        transform.anchoredPosition = new(465, -2);
+        transform.anchoredPosition = new(465, 50);
         
         Slider.SetLabel(label);
     }
