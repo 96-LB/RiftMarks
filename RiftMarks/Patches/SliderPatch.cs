@@ -91,14 +91,12 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     }
 
     public void InitializePracticeBeatRange() {
-        var diff = UsingMarks ? 0 : RRUtils.PracticeModeMinimumPracticeModeLength;
-        Instance.SetSliderMinimumDifference(diff);
-        
-        var max = UsingMarks ? CurrentMarkCount : MaxBeats;
         var min = UsingMarks ? 1 : 0;
+        var max = UsingMarks ? CurrentMarkCount : MaxBeats;
+        var diff = UsingMarks ? 0 : RRUtils.PracticeModeMinimumPracticeModeLength;
+        
         Instance.SetSliderBounds(min, max);
-        Instance.SetCurrentValueMin(min);
-        Instance.SetCurrentValueMax(max);
+        Instance.SetSliderMinimumDifference(diff);
         
         UpdateColors();
         UpdateLabel();
