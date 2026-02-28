@@ -65,6 +65,7 @@ When a chart supports riftmarks, the practice mode slider will automatically be 
 The mod also makes a couple other minor adjustments:
 - General performance optimizations, especially when starting the level in practice mode thousands of beats into a song with many traps.
 - If you move the beat slider in the practice mode pause menu, returning to the game will only reload the level if the beats have changed.
+- Minor bugfixes with the practice mode slider on charts with fractional beat length.
 - The score display is no longer capped at 7 digits (this bugfix will likely be moved to a different mod in the future).
 
 
