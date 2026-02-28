@@ -30,6 +30,10 @@ public static class BeatmapPatch {
             Log.Error("Could not find Debug.Log method for transpiler!");
         }
         
+        if(NoOpMethod is null) {
+            Log.Error($"Could not find {nameof(NoOp)} method for transpiler!");
+        }
+        
         foreach(var instruction in instructions) {
             if(DebugLogMethod is not null && instruction.Calls(DebugLogMethod)) {
                 yield return new CodeInstruction(OpCodes.Call, NoOpMethod);
