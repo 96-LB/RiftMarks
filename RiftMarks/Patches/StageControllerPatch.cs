@@ -11,11 +11,10 @@ namespace RiftMarks.Patches;
 
 [HarmonyPatch(typeof(RRStageController))]
 public static class StageControllerPatch {
-    
     public static MethodInfo SetPracticeModeBeatRangeMethod { get; } = AccessTools.Method(typeof(RhythmRiftScenePayload), nameof(RhythmRiftScenePayload.SetPracticeModeBeatRange));
     public static MethodInfo NoOpMethod { get; } = AccessTools.Method(typeof(StageControllerPatch), nameof(NoOp));
     
-    public static void NoOp(float startBeat, float endBeat) {
+    public static void NoOp(float _1, float _2) {
         // replaces RhythmRiftScenePayload.SetPracticeModeBeatRange calls
     }
     

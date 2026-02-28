@@ -12,12 +12,12 @@ namespace RiftMarks.Patches;
 
 public class SliderData : State<RangeSliderOptionController, SliderData> {
     public static bool LastMarkMode { get; private set; }
-
+    
     public RiftMarkList? CurrentMarkList { get; set; }
     public int MaxBeats { get; set; }
     public bool MarkModeEnabled { get; private set; }
     public TMP_Text? Label { get; private set; }
-
+    
     public Color BeatModeFillColor { get; private set; } = Color.clear;
     public Color BeatModeBackgroundColor { get; private set; } = Color.clear;
     public Color MarkModeFillColor { get; private set; } = new(0.2f, 0.8f, 1.0f);
@@ -26,11 +26,11 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
     public bool SelectionHasMarks => CurrentMarkList?.HasMarks ?? false;
     public int CurrentMarkCount => CurrentMarkList?.MarkCount ?? 0;
     public bool UsingMarks => SelectionHasMarks && MarkModeEnabled;
-
+    
     public SliderOptionData? MinOption => Instance.MinControlOption?.Pipe(SliderOptionData.Of);
     public SliderOptionData? MaxOption => Instance.MaxControlOption?.Pipe(SliderOptionData.Of);
-
-
+    
+    
     public void InitializeSliders() {
         MinOption?.Pipe(x => {
             x.OnModeSwitch -= ToggleMarkMode;
@@ -41,12 +41,12 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
             x.OnModeSwitch += ToggleMarkMode;
         });
     }
-
+    
     public void SetMarkMode(bool enabled) {
         LastMarkMode = MarkModeEnabled = enabled;
         InitializePracticeBeatRange();
     }
-
+    
     public void ToggleMarkMode() {
         ToggleMarkMode(true);
     }
@@ -80,7 +80,7 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
         beatMax = Mathf.Clamp(beatMax, beatMin, MaxBeats);
         return (beatMin, beatMax);
     }
-
+    
     public (int markMin, int markMax) BeatToMarkRange(int beatMin, int beatMax) {
         if(CurrentMarkList is null) {
             throw new InvalidOperationException("No current mark list available for conversion.");
@@ -89,7 +89,7 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
         var markMax = CurrentMarkList.GetIndex(beatMax);
         return (markMin, markMax);
     }
-
+    
     public void InitializePracticeBeatRange() {
         var min = UsingMarks ? 1 : 0;
         var max = UsingMarks ? CurrentMarkCount : MaxBeats;
@@ -101,36 +101,36 @@ public class SliderData : State<RangeSliderOptionController, SliderData> {
         UpdateColors();
         UpdateLabel();
     }
-
+    
     public void UpdateColors() {
         if(BeatModeFillColor == Color.clear) {
             BeatModeFillColor = Instance._selectedFillColor;
         }
-
+        
         if(BeatModeBackgroundColor == Color.clear) {
             BeatModeBackgroundColor = Instance._selectedBackgroundColor;
         }
-
+        
         Instance._selectedFillColor = UsingMarks ? MarkModeFillColor : BeatModeFillColor;
         Instance._selectedBackgroundColor = UsingMarks ? MarkModeBackgroundColor : BeatModeBackgroundColor;
         Instance.RefreshVisuals();
     }
-
+    
     public void SetLabel(TMP_Text label) {
         Label = label;
         UpdateLabel();
     }
-
+    
     public void UpdateLabel() {
         if(Label is null) {
             return;
         }
-
+        
         if(!UsingMarks) {
             Label.SetText("");
             return;
         }
-
+        
         var (minBeat, maxBeat) = MarkToBeatRange(Instance.CurrentValueMin, Instance.CurrentValueMax);
         var minText = CurrentMarkList!.GetName(Instance.CurrentValueMin) ?? $"Beat {minBeat}";
         var maxText = CurrentMarkList!.GetName(Instance.CurrentValueMax) ?? $"Beat {maxBeat}";
@@ -154,7 +154,7 @@ public static class SliderPatch {
             __instance._sliderValueMax = max;
         }
     }
-
+    
     [HarmonyPatch(nameof(RangeSliderOptionController.RaiseOnMinMaxChanged))]
     [HarmonyPostfix]
     public static void RaiseOnMinMaxChanged_Post(RangeSliderOptionController __instance, ref Vector2Int? __state) {
@@ -164,7 +164,7 @@ public static class SliderPatch {
             __instance._sliderValueMax = __state.Value.y;
         }
     }
-
+    
     [HarmonyPatch(nameof(RangeSliderOptionController.UpdateVisualElements))]
     [HarmonyPostfix]
     public static void UpdateVisualElements(RangeSliderOptionController __instance) {

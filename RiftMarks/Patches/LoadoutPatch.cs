@@ -71,14 +71,14 @@ public static class LoadoutPatch {
         var state = LoadoutState.Of(__instance);
         state.Initialize();
     }
-
+    
     [HarmonyPatch(nameof(LoadoutScreenManager.ShowImpl))]
     [HarmonyPostfix]
     public static void ShowImpl(LoadoutScreenManager __instance) {
         var state = LoadoutState.Of(__instance);
         state.UpdateSlider();
     }
-
+    
     [HarmonyPatch(nameof(LoadoutScreenManager.InitializePracticeBeatRange))]
     [HarmonyPostfix]
     public static void InitializePracticeBeatRange(LoadoutScreenManager __instance) {

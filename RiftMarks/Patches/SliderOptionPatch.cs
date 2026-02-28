@@ -9,9 +9,9 @@ namespace RiftMarks.Patches;
 
 public class SliderOptionData : State<RangeSliderControlOption, SliderOptionData> {
     public Dictionary<string, RiftMarkList> RiftMarks { get; } = [];
-
+    
     public event Action? OnModeSwitch;
-
+    
     public void SwitchMode() {
         OnModeSwitch?.Invoke();
     }

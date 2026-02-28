@@ -21,7 +21,7 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
             RiftMarks[key.ToUpperInvariant()] = new RiftMarkList(value);
         }
     }
-
+    
     public RiftMarkList? GetMarks(Difficulty difficulty) {
         var key = difficulty.ToString().ToUpperInvariant();
         if(RiftMarks.TryGetValue(key, out var marks)) {
@@ -32,7 +32,7 @@ public class MetadataState : State<ITrackMetadata, MetadataState> {
         }
         return null;
     }
-
+    
     public void LoadRiftMarks(string basePath) {
         var json = $"{PluginData.Name}.json";
         var markPath = Path.Combine(basePath, json);

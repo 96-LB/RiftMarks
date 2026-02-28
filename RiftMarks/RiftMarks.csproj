@@ -61,8 +61,5 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>lib\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Addressables">
-      <HintPath>lib\Unity.Addressables.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
