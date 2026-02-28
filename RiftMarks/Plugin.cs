@@ -4,7 +4,7 @@ using RiftOfTheNecroManager;
 namespace RiftMarks;
 
 
-[BepInPlugin("com.lalabuff.necrodancer.riftmarks", "RiftMarks", "1.0.0")]
-[NecroManagerInfo(menuNameOverride: "RiftMarks")] // TODO: change capitalization?
+[BepInPlugin("com.lalabuff.necrodancer.riftmarks", "RiftMarks", "1.0.1")]
+[NecroManagerInfo(menuNameOverride: "RiftMarks")]
 public class Plugin : RiftPlugin {
 }

@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.1 - 28 February 2026
+- Fixed a bug which caused issues in practice mode on charts with fractional beat length.
+
 ## v1.0.0 - 19 February 2026
 ⚠️ **This release contains breaking changes.**
 - Removed the hardcoded version check in favor of an automated version control system.
